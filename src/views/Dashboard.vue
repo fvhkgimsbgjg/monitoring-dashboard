@@ -1,54 +1,39 @@
 <!-- src/views/Dashboard.vue -->
 <template>
-    <MainLayout>
-      <div class="dashboard">
-        <SystemResources />
-        <UserExperience />
-      </div>
-    </MainLayout>
-  </template>
-  
-  <script>
-  import { onMounted, onUnmounted } from 'vue'
-  import MainLayout from '../layouts/MainLayout.vue'
-  import SystemResources from '../components/SystemResources.vue'
-  import UserExperience from '../components/UserExperience.vue'
-  import { useMonitorStore } from '../stores/monitorStore'
-  
-  export default {
-    name: 'Dashboard',
-    components: {
-      MainLayout,
-      SystemResources,
-      UserExperience
-    },
-    setup() {
-      const store = useMonitorStore()
-  
-      onMounted(() => {
-        store.startFetchingData()
-        // 初始数据获取
-        store.fetchCpuUsage()
-        store.fetchMemoryUsage()
-        store.fetchDiskUsage()
-        store.fetchNetworkTraffic()
-        store.fetchFrontendPerformance()
-        store.fetchErrorReports()
-        store.fetchUserBehavior()
-      })
-  
-      onUnmounted(() => {
-        store.stopFetchingData()
-      })
-    }
+  <div class="dashboard">
+    <SystemResources />
+    <UserExperience />
+    <!-- 其他内容 -->
+  </div>
+</template>
+
+<script>
+import { onMounted } from 'vue'
+import SystemResources from '@/components/SystemResources.vue' // 修正导入路径
+import UserExperience from '@/components/UserExperience.vue'
+import { useMonitorStore } from '@/stores/monitorStore'
+
+export default {
+  name: 'Dashboard',
+  components: {
+    SystemResources,
+    UserExperience
+  },
+  setup() {
+    const store = useMonitorStore()
+
+    onMounted(() => {
+      store.initializeTheme()
+      // 其他初始化操作
+    })
+
+    return {}
   }
-  </script>
-  
-  <style scoped>
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+.dashboard {
+  /* 添加您的样式 */
+}
+</style>

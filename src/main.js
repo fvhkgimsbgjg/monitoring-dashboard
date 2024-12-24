@@ -3,6 +3,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
+import '@fortawesome/fontawesome-free/css/all.css' // 引入 Font Awesome 样式
+import './style.css' // 引入全局样式
 
 const app = createApp(App)
 const pinia = createPinia()

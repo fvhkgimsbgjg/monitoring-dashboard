@@ -1,125 +1,133 @@
 // src/stores/monitorStore.js
 import { defineStore } from 'pinia'
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: 'https://your-api-base-url.com', // 替换为您的实际 API 基础 URL
-  timeout: 10000,
-  headers: { 'Content-Type': 'application/json' }
-})
 
 export const useMonitorStore = defineStore('monitor', {
   state: () => ({
-    cpuUsage: [],
-    memoryUsage: { used: 0, free: 0 },
-    diskUsage: { used: 0, free: 0 },
-    networkTraffic: [],
+    cpuUsage: [
+      { time: '00:00', usage: 20 },
+      { time: '01:00', usage: 25 },
+      { time: '02:00', usage: 30 },
+      // 添加更多静态数据以模拟
+    ],
+    memoryUsage: { used: 4096, free: 2048 }, // 单位：MB
+    diskUsage: { used: 500, free: 1500 }, // 单位：GB
+    networkTraffic: [
+      { time: '00:00', inbound: 100, outbound: 80 },
+      { time: '01:00', inbound: 120, outbound: 90 },
+      { time: '02:00', inbound: 110, outbound: 85 },
+      // 添加更多静态数据以模拟
+    ],
     frontendPerformance: {
-      loadTime: 0,
-      interactionTime: 0,
-      responseTime: 0,
-      renderTime: 0
+      loadTime: 2.5, // 单位：秒
+      interactionTime: 1.2, // 单位：秒
+      responseTime: 0.8, // 单位：秒
+      renderTime: 1.5 // 单位：秒
     },
-    errorReports: [],
+    errorReports: [
+      'Error: Unable to fetch data from server.',
+      'Warning: High memory usage detected.',
+      'Error: Disk space running low.',
+      // 添加更多静态错误报告
+    ],
     userBehavior: {
-      labels: [],
-      data: []
+      labels: ['浏览页面', '点击按钮', '提交表单', '滚动页面'],
+      data: [65, 59, 80, 81]
     },
     loading: false,
     error: null,
-    user: null,
-    timers: {}
+    user: JSON.parse(localStorage.getItem('user')) || null, // 从本地存储获取用户信息
+    theme: localStorage.getItem('theme') || 'light' // 新增主题状态，默认亮色主题
   }),
   actions: {
-    // 数据获取动作
-    async fetchCpuUsage() {
+    // 数据获取动作（使用静态数据，无需异步操作）
+    fetchCpuUsage() {
       this.loading = true
       try {
-        const response = await api.get('/cpu-usage') // 替换为实际端点
-        this.cpuUsage = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取 CPU 使用率数据。'
       } finally {
         this.loading = false
       }
     },
-    async fetchMemoryUsage() {
+    fetchMemoryUsage() {
       this.loading = true
       try {
-        const response = await api.get('/memory-usage') // 替换为实际端点
-        this.memoryUsage = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取内存使用率数据。'
       } finally {
         this.loading = false
       }
     },
-    async fetchDiskUsage() {
+    fetchDiskUsage() {
       this.loading = true
       try {
-        const response = await api.get('/disk-usage') // 替换为实际端点
-        this.diskUsage = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取磁盘使用情况数据。'
       } finally {
         this.loading = false
       }
     },
-    async fetchNetworkTraffic() {
+    fetchNetworkTraffic() {
       this.loading = true
       try {
-        const response = await api.get('/network-traffic') // 替换为实际端点
-        this.networkTraffic = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取网络流量数据。'
       } finally {
         this.loading = false
       }
     },
-    async fetchFrontendPerformance() {
+    fetchFrontendPerformance() {
       this.loading = true
       try {
-        const response = await api.get('/frontend-performance') // 替换为实际端点
-        this.frontendPerformance = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取前端性能数据。'
       } finally {
         this.loading = false
       }
     },
-    async fetchErrorReports() {
+    fetchErrorReports() {
       this.loading = true
       try {
-        const response = await api.get('/error-reports') // 替换为实际端点
-        this.errorReports = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取错误报告。'
       } finally {
         this.loading = false
       }
     },
-    async fetchUserBehavior() {
+    fetchUserBehavior() {
       this.loading = true
       try {
-        const response = await api.get('/user-behavior') // 替换为实际端点
-        this.userBehavior = response.data
+        // 数据已静态初始化，无需操作
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = '无法获取用户行为数据。'
       } finally {
         this.loading = false
       }
     },
-    // 登录动作
+    // 登录动作（模拟登录）
     async login(username, password) {
       this.loading = true
       this.error = null
       try {
-        const response = await api.post('/login', { username, password }) // 替换为实际登录端点
-        this.user = response.data.user
-        localStorage.setItem('authToken', response.data.token) // 存储令牌
-        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}` // 设置默认头部
+        // 模拟 API 请求延迟
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        // 使用静态凭证进行验证
+        if (username === 'admin' && password === 'password') {
+          this.user = { name: 'Admin User', role: 'admin' }
+          // 存储用户信息到本地存储（实际项目中应存储令牌）
+          localStorage.setItem('authToken', 'mock-token')
+          localStorage.setItem('user', JSON.stringify(this.user))
+        } else {
+          throw new Error('用户名或密码错误')
+        }
       } catch (err) {
-        this.error = err.response?.data?.message || err.message
+        this.error = err.message
         throw err
       } finally {
         this.loading = false
@@ -128,22 +136,24 @@ export const useMonitorStore = defineStore('monitor', {
     logout() {
       this.user = null
       localStorage.removeItem('authToken')
-      delete api.defaults.headers.common['Authorization']
+      localStorage.removeItem('user')
     },
-    // 启动定时器以定期获取数据
-    startFetchingData() {
-      this.timers.cpuUsage = setInterval(() => this.fetchCpuUsage(), 10000) // 每10秒获取一次
-      this.timers.memoryUsage = setInterval(() => this.fetchMemoryUsage(), 10000)
-      this.timers.diskUsage = setInterval(() => this.fetchDiskUsage(), 10000)
-      this.timers.networkTraffic = setInterval(() => this.fetchNetworkTraffic(), 10000)
-      this.timers.frontendPerformance = setInterval(() => this.fetchFrontendPerformance(), 10000)
-      this.timers.errorReports = setInterval(() => this.fetchErrorReports(), 10000)
-      this.timers.userBehavior = setInterval(() => this.fetchUserBehavior(), 10000)
+    // 新增主题切换动作
+    toggleTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light'
+      localStorage.setItem('theme', this.theme) // 持久化主题选择
     },
-    // 停止定时器
-    stopFetchingData() {
-      Object.values(this.timers).forEach(timer => clearInterval(timer))
-      this.timers = {}
+    // 初始化主题，根据本地存储或系统偏好设置
+    initializeTheme() {
+      const savedTheme = localStorage.getItem('theme')
+      if (savedTheme) {
+        this.theme = savedTheme
+      } else {
+        // 根据系统偏好设置自动选择主题
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        this.theme = prefersDark ? 'dark' : 'light'
+        localStorage.setItem('theme', this.theme)
+      }
     }
   }
 })

@@ -1,83 +1,73 @@
 <!-- src/components/charts/ChartComponent.vue -->
 <template>
-    <div class="chart-container">
-      <canvas ref="canvas"></canvas>
-    </div>
-  </template>
-  
-  <script>
-  import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
-  import { Chart, registerables } from 'chart.js'
-  
-  Chart.register(...registerables)
-  
-  export default {
-    name: 'ChartComponent',
-    props: {
-      type: {
-        type: String,
-        required: true
-      },
-      data: {
-        type: Object,
-        required: true
-      },
-      options: {
-        type: Object,
-        default: () => ({})
-      }
+  <div>
+    <canvas ref="chartCanvas"></canvas>
+  </div>
+</template>
+
+<script>
+import { onMounted, watch, ref } from 'vue'
+import { Chart, registerables } from 'chart.js'
+
+Chart.register(...registerables)
+
+export default {
+  name: 'ChartComponent',
+  props: {
+    type: {
+      type: String,
+      required: true
     },
-    setup(props) {
-      const canvas = ref(null)
-      let chartInstance = null
-  
-      onMounted(() => {
-        chartInstance = new Chart(canvas.value, {
-          type: props.type,
-          data: props.data,
-          options: props.options
-        })
-      })
-  
-      watch(
-        () => props.data,
-        (newData) => {
-          if (chartInstance) {
-            chartInstance.data = newData
-            chartInstance.update()
-          }
-        },
-        { deep: true }
-      )
-  
-      watch(
-        () => props.type,
-        (newType) => {
-          if (chartInstance) {
-            chartInstance.config.type = newType
-            chartInstance.update()
-          }
-        }
-      )
-  
-      onBeforeUnmount(() => {
-        if (chartInstance) {
-          chartInstance.destroy()
-        }
-      })
-  
-      return {
-        canvas
+    data: {
+      type: Object,
+      required: true
+    },
+    options: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  setup(props) {
+    const chartCanvas = ref(null)
+    let chartInstance = null
+
+    const renderChart = () => {
+      if (chartInstance) {
+        chartInstance.destroy()
       }
+      chartInstance = new Chart(chartCanvas.value, {
+        type: props.type,
+        data: props.data,
+        options: props.options
+      })
+    }
+
+    onMounted(() => {
+      renderChart()
+    })
+
+    watch(
+      () => props.data,
+      () => {
+        renderChart()
+      },
+      { deep: true }
+    )
+
+    watch(
+      () => props.type,
+      () => {
+        renderChart()
+      }
+    )
+
+    return {
+      chartCanvas
     }
   }
-  </script>
-  
-  <style scoped>
-  .chart-container {
-    position: relative;
-    width: 100%;
-    height: 300px;
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+/* 可根据需要添加样式 */
+</style>
