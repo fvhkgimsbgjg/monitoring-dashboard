@@ -2,21 +2,21 @@
 <template>
     <div class="user-experience">
       <FrontendPerformance />
-      <ErrorRate />
+      <ErrorReports />
       <UserBehaviorAnalysis />
     </div>
   </template>
   
   <script>
   import FrontendPerformance from './charts/FrontendPerformance.vue'
-  import ErrorRate from './charts/ErrorRate.vue'
+  import ErrorReports from './charts/ErrorReports.vue'
   import UserBehaviorAnalysis from './charts/UserBehaviorAnalysis.vue'
   
   export default {
     name: 'UserExperience',
     components: {
       FrontendPerformance,
-      ErrorRate,
+      ErrorReports,
       UserBehaviorAnalysis
     }
   }

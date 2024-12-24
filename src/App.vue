@@ -1,3 +1,4 @@
+<!-- src/App.vue -->
 <template>
   <router-view />
 </template>
@@ -9,9 +10,16 @@ export default {
 </script>
 
 <style>
-/* 全局样式可以在这里添加 */
+/* 全局样式 */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
 }
+
+h1, h2, h3 {
+  color: #333;
+}
+
+/* 其他全局样式 */
 </style>

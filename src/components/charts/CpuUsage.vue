@@ -1,11 +1,16 @@
+<!-- src/components/charts/CpuUsage.vue -->
 <template>
     <div class="cpu-usage">
       <h3>CPU 使用率</h3>
-      <ChartComponent :type="'line'" :data="chartData" />
+      <div v-if="store.loading">加载中...</div>
+      <ChartComponent v-else :type="'line'" :data="chartData" />
+      <div v-if="store.error" class="error">{{ store.error }}</div>
     </div>
   </template>
   
   <script>
+  import { computed } from 'vue'
+  import { useMonitorStore } from '../../stores/monitorStore'
   import ChartComponent from './ChartComponent.vue'
   
   export default {
@@ -13,20 +18,25 @@
     components: {
       ChartComponent
     },
-    data() {
+    setup() {
+      const store = useMonitorStore()
+  
+      const chartData = computed(() => ({
+        labels: store.cpuUsage.map(entry => entry.time),
+        datasets: [
+          {
+            label: 'CPU 使用率 (%)',
+            data: store.cpuUsage.map(entry => entry.usage),
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }
+        ]
+      }))
+  
       return {
-        chartData: {
-          labels: ['一月', '二月', '三月', '四月', '五月', '六月'],
-          datasets: [
-            {
-              label: 'CPU 使用率',
-              data: [65, 59, 80, 81, 56, 55],
-              fill: false,
-              borderColor: 'rgb(75, 192, 192)',
-              tension: 0.1
-            }
-          ]
-        }
+        chartData,
+        store
       }
     }
   }
@@ -38,6 +48,11 @@
     padding: 15px;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
   }
   </style>
   

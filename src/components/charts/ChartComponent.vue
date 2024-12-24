@@ -6,7 +6,7 @@
   </template>
   
   <script>
-  import { onMounted, ref, watch } from 'vue'
+  import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
   import { Chart, registerables } from 'chart.js'
   
   Chart.register(...registerables)
@@ -49,6 +49,22 @@
         },
         { deep: true }
       )
+  
+      watch(
+        () => props.type,
+        (newType) => {
+          if (chartInstance) {
+            chartInstance.config.type = newType
+            chartInstance.update()
+          }
+        }
+      )
+  
+      onBeforeUnmount(() => {
+        if (chartInstance) {
+          chartInstance.destroy()
+        }
+      })
   
       return {
         canvas

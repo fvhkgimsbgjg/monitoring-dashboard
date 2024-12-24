@@ -2,23 +2,24 @@
 <template>
     <div class="error-reports">
       <h3>错误报告</h3>
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+      <div v-if="store.loading">加载中...</div>
+      <ul v-else>
+        <li v-for="(error, index) in store.errorReports" :key="index">{{ error }}</li>
       </ul>
+      <div v-if="store.error" class="error">{{ store.error }}</div>
     </div>
   </template>
   
   <script>
+  import { useMonitorStore } from '../../stores/monitorStore'
+  
   export default {
     name: 'ErrorReports',
-    data() {
+    setup() {
+      const store = useMonitorStore()
+  
       return {
-        errors: [
-          '错误1: 数据库连接失败',
-          '错误2: 无法加载用户信息',
-          '错误3: 前端渲染异常'
-          // 您可以根据需要添加更多错误
-        ]
+        store
       }
     }
   }
@@ -40,6 +41,11 @@
   .error-reports li {
     padding: 5px 0;
     border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
   }
   </style>
   

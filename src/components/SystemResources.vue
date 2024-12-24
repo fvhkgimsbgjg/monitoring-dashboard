@@ -3,7 +3,7 @@
     <div class="system-resources">
       <CpuUsage />
       <MemoryUsage />
-      <StorageNetwork />
+      <DiskUsage />
       <NetworkTraffic />
     </div>
   </template>
@@ -11,7 +11,7 @@
   <script>
   import CpuUsage from './charts/CpuUsage.vue'
   import MemoryUsage from './charts/MemoryUsage.vue'
-  import StorageNetwork from './charts/StorageNetwork.vue'
+  import DiskUsage from './charts/DiskUsage.vue'
   import NetworkTraffic from './charts/NetworkTraffic.vue'
   
   export default {
@@ -19,7 +19,7 @@
     components: {
       CpuUsage,
       MemoryUsage,
-      StorageNetwork,
+      DiskUsage,
       NetworkTraffic
     }
   }
