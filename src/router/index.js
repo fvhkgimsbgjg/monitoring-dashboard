@@ -1,4 +1,3 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 import Dashboard from '@/views/Dashboard.vue'
@@ -10,11 +9,13 @@ import UserManagement from '@/views/UserManagement.vue'
 import AddUser from '@/components/UserManagement/AddUser.vue'
 import EditUser from '@/components/UserManagement/EditUser.vue'
 import SystemAlerts from '@/views/SystemAlerts.vue'
+import ActiveAlerts from '@/components/alerts/ActiveAlerts.vue'
 import Logs from '@/views/Logs.vue'
+import SystemLogs from '@/components/logs/SystemLogs.vue'
 import UserExperience from '@/components/UserExperience.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 
-// 新增监控组件
+// Monitoring components
 import NetworkTraffic from '@/components/charts/NetworkTraffic.vue'
 import FrontendPerformance from '@/components/charts/FrontendPerformance.vue'
 import ErrorReports from '@/components/charts/ErrorReports.vue'
@@ -55,6 +56,11 @@ const routes = [
             path: 'disk-usage',
             name: 'DiskUsage',
             component: DiskUsage
+          },
+          {
+            path: 'network-traffic',
+            name: 'NetworkTraffic',
+            component: NetworkTraffic
           }
         ]
       },
@@ -78,42 +84,55 @@ const routes = [
       {
         path: 'system-alerts',
         name: 'SystemAlerts',
-        component: SystemAlerts
+        component: SystemAlerts,
+        children: [
+          {
+            path: 'active',
+            name: 'ActiveAlerts',
+            component: ActiveAlerts
+          }
+        ]
       },
       {
         path: 'logs',
         name: 'Logs',
-        component: Logs
+        component: Logs,
+        children: [
+          {
+            path: 'system',
+            name: 'SystemLogs',
+            component: SystemLogs
+          }
+        ]
+      },
+      {
+        path: 'monitoring',
+        name: 'Monitoring',
+        children: [
+          {
+            path: 'frontend-performance',
+            name: 'FrontendPerformance',
+            component: FrontendPerformance
+          },
+          {
+            path: 'error-reports',
+            name: 'ErrorReports',
+            component: ErrorReports
+          },
+          {
+            path: 'user-behavior',
+            name: 'UserBehavior',
+            component: UserBehavior
+          }
+        ]
       },
       {
         path: 'user-experience',
         name: 'UserExperience',
         component: UserExperience
-      },
-      // 新增监控路由
-      {
-        path: 'network-traffic',
-        name: 'NetworkTraffic',
-        component: NetworkTraffic
-      },
-      {
-        path: 'frontend-performance',
-        name: 'FrontendPerformance',
-        component: FrontendPerformance
-      },
-      {
-        path: 'error-reports',
-        name: 'ErrorReports',
-        component: ErrorReports
-      },
-      {
-        path: 'user-behavior',
-        name: 'UserBehavior',
-        component: UserBehavior
       }
     ]
-  },
-  // 可以添加404页面等其他路由
+  }
 ]
 
 const router = createRouter({
@@ -121,7 +140,6 @@ const router = createRouter({
   routes
 })
 
-// 添加路由守卫（如果尚未添加）
 router.beforeEach((to, from, next) => {
   const authToken = localStorage.getItem('authToken')
   if (to.matched.some(record => record.meta.requiresAuth)) {

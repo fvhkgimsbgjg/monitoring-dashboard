@@ -1,83 +1,74 @@
-<!-- src/components/UserManagement/EditUser.vue -->
+// src/components/UserManagement/EditUser.vue
 <template>
-    <div class="edit-user">
-      <h2>编辑用户</h2>
-      <form @submit.prevent="handleEditUser">
-        <div class="form-group">
-          <label for="username">用户名</label>
-          <input type="text" id="username" v-model="username" required />
-        </div>
-        <div class="form-group">
-          <label for="role">角色</label>
-          <select id="role" v-model="role" required>
-            <option value="admin">管理员</option>
-            <option value="user">普通用户</option>
-          </select>
-        </div>
-        <button type="submit" :disabled="loading">保存</button>
-        <div v-if="success" class="success">用户信息已更新！</div>
-        <div v-if="error" class="error">{{ error }}</div>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-  import { ref, onMounted } from 'vue'
-  import { useMonitorStore } from '@/stores/monitorStore'
-  import { useRouter, useRoute } from 'vue-router'
-  
-  export default {
-    name: 'EditUser',
-    setup() {
-      const username = ref('')
-      const role = ref('user')
-      const success = ref(false)
-      const error = ref(null)
-      const loading = ref(false)
-      const store = useMonitorStore()
-      const router = useRouter()
-      const route = useRoute()
-  
-      const userId = parseInt(route.query.id)
-  
-      onMounted(() => {
-        const user = store.users.find(u => u.id === userId)
-        if (user) {
-          username.value = user.username
-          role.value = user.role
-        } else {
-          alert('未找到指定的用户')
-          router.push({ name: 'UserManagement' })
+  <UserForm
+    v-if="user"
+    title="编辑用户"
+    submit-text="保存"
+    :initial-data="user"
+    :loading="loading"
+    @submit="handleEditUser"
+  />
+</template>
+
+<script>
+import { ref, onMounted } from 'vue'
+import { useMonitorStore } from '@/stores/monitorStore'
+import { useRouter, useRoute } from 'vue-router'
+import UserForm from './UserForm.vue'
+
+export default {
+  name: 'EditUser',
+  components: {
+    UserForm
+  },
+
+  setup() {
+    const store = useMonitorStore()
+    const router = useRouter()
+    const route = useRoute()
+    const loading = ref(false)
+    const user = ref(null)
+
+    const userId = parseInt(route.query.id)
+
+    onMounted(() => {
+      const foundUser = store.users.find(u => u.id === userId)
+      if (foundUser) {
+        user.value = {
+          username: foundUser.username,
+          role: foundUser.role
         }
-      })
-  
-      const handleEditUser = async () => {
-        loading.value = true
-        success.value = false
-        error.value = null
-        try {
-          await store.editUser({ id: userId, username: username.value, role: role.value })
-          success.value = true
-          // 重定向回用户管理页面
-          router.push({ name: 'UserManagement' })
-        } catch (err) {
-          error.value = '更新用户失败。'
-        } finally {
-          loading.value = false
-        }
+      } else {
+        router.push({ 
+          name: 'UserManagement',
+          query: { error: 'user-not-found' }
+        })
       }
-  
-      return {
-        username,
-        role,
-        success,
-        error,
-        handleEditUser,
-        loading
+    })
+
+    const handleEditUser = async (formData) => {
+      loading.value = true
+      try {
+        await store.editUser({ 
+          id: userId,
+          ...formData
+        })
+        router.push({ name: 'UserManagement' })
+      } catch (err) {
+        throw new Error('更新用户失败')
+      } finally {
+        loading.value = false
       }
     }
+
+    return {
+      user,
+      loading,
+      handleEditUser
+    }
   }
-  </script>
+}
+</script>
   
   <style scoped>
   .edit-user {
