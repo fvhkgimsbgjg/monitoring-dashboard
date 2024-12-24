@@ -18,88 +18,82 @@
         </li>
       </ul>
     </div>
-</template>
-
-<script>
-import { ref, computed } from 'vue'
-
-export default {
-  name: 'Logs',
-  setup() {
-    const logs = ref([
-      { id: 1, level: 'info', message: '系统启动成功。', timestamp: '2024-04-27 08:00:00' },
-      { id: 2, level: 'warning', message: '磁盘空间不足。', timestamp: '2024-04-27 09:30:00' },
-      { id: 3, level: 'error', message: '应用程序崩溃。', timestamp: '2024-04-27 10:45:00' },
-      { id: 4, level: 'info', message: '用户登录成功。', timestamp: '2024-04-27 11:00:00' },
-      // 添加更多静态日志数据
-    ])
-
-    const selectedLevel = ref('')
-
-    const filteredLogs = computed(() => {
-      if (!selectedLevel.value) {
-        return logs.value
+  </template>
+  
+  <script>
+  import { ref, computed } from 'vue'
+  import { useMonitorStore } from '@/stores/monitorStore'
+  
+  export default {
+    name: 'Logs',
+    setup() {
+      const store = useMonitorStore()
+      const selectedLevel = ref('')
+  
+      const filteredLogs = computed(() => {
+        if (!selectedLevel.value) {
+          return store.logs
+        }
+        return store.logs.filter(log => log.level === selectedLevel.value)
+      })
+  
+      return {
+        selectedLevel,
+        filteredLogs
       }
-      return logs.value.filter(log => log.level === selectedLevel.value)
-    })
-
-    return {
-      logs,
-      selectedLevel,
-      filteredLogs
     }
   }
-}
-</script>
-
-<style scoped>
-.logs {
-  padding: 20px;
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-.logs-filter {
-  margin-bottom: 20px;
-}
-
-.logs-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0; /* 确保没有额外的外边距 */
-}
-
-.logs-list li {
-  padding: 10px 10px 10px 120px; /* 增加左侧内边距，为时间戳留出空间 */
-  border-bottom: 1px solid #ddd;
-  position: relative;
-}
-
-.logs-list li.info {
-  background-color: #d1ecf1;
-  color: #0c5460;
-}
-
-.logs-list li.warning {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.logs-list li.error {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.timestamp {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 0.8em;
-  color: #6c757d;
-  width: 100px; /* 固定宽度，确保时间戳不会超过预期范围 */
-  text-align: right; /* 右对齐时间戳 */
-  white-space: nowrap; /* 防止时间戳换行 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
+  </script>
+  
+  <style scoped>
+  .logs {
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .logs-filter {
+    margin-bottom: 20px;
+  }
+  
+  .logs-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .logs-list li {
+    padding: 10px 10px 10px 120px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+  }
+  
+  .logs-list li.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+  }
+  
+  .logs-list li.warning {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .logs-list li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .timestamp {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.8em;
+    color: #6c757d;
+    width: 100px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  </style>
+  

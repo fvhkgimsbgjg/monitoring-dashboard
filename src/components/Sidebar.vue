@@ -1,73 +1,61 @@
 <!-- src/components/Sidebar.vue -->
 <template>
-  <div :class="['sidebar', { collapsed }]">
-    <div class="sidebar-header">
-      <h2 v-if="!collapsed">仪表盘</h2>
-      <button @click="toggleCollapse" class="collapse-button" aria-label="切换侧边栏">
-        <span v-if="collapsed">→</span>
-        <span v-else>←</span>
-      </button>
-    </div>
-    <nav class="nav-links">
-      <SidebarItem
-        v-for="item in navItems"
-        :key="item.name"
-        :to="item.to"
-        :icon="item.icon"
-        :label="item.label"
-        :collapsed="collapsed"
-      />
-    </nav>
-    <div class="logout-button">
-      <button @click="handleLogout" :class="{ collapsed }">
-        <span v-if="!collapsed"><i class="fas fa-sign-out-alt"></i> 登出</span>
-        <span v-else><i class="fas fa-sign-out-alt"></i></span>
-      </button>
-    </div>
-  </div>
+  <aside class="sidebar">
+    <SidebarItem
+      to="/dashboard"
+      label="仪表盘"
+      icon="fas fa-tachometer-alt"
+      :exact="true"
+    />
+    <SidebarItem
+      to="/dashboard/system-resources"
+      label="系统资源"
+      icon="fas fa-server"
+      :children="systemResourcesChildren"
+    />
+    <SidebarItem
+      to="/dashboard/user-management"
+      label="用户管理"
+      icon="fas fa-users"
+      :children="userManagementChildren"
+    />
+    <SidebarItem
+      to="/dashboard/system-alerts"
+      label="系统警报"
+      icon="fas fa-exclamation-triangle"
+    />
+    <SidebarItem
+      to="/dashboard/logs"
+      label="日志"
+      icon="fas fa-file-alt"
+    />
+    <SidebarItem
+      to="/dashboard/user-experience"
+      label="用户体验"
+      icon="fas fa-smile"
+    />
+  </aside>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useMonitorStore } from '../stores/monitorStore'
 import SidebarItem from './SidebarItem.vue'
-import { useRouter } from 'vue-router'
 
 export default {
   name: 'Sidebar',
   components: {
     SidebarItem
   },
-  setup() {
-    const collapsed = ref(false)
-    const store = useMonitorStore()
-    const router = useRouter()
-
-    const toggleCollapse = () => {
-      collapsed.value = !collapsed.value
-    }
-
-    const handleLogout = () => {
-      store.logout()
-      // 使用路由导航到登录页面，而不是全页面刷新
-      router.push({ name: 'Login' })
-    }
-
-    const navItems = [
-      { name: 'Dashboard', label: '仪表盘', to: '/dashboard', icon: 'fa-chart-line' },
-      { name: 'SystemResources', label: '系统资源', to: '/dashboard/system-resources', icon: 'fa-server' },
-      { name: 'UserExperience', label: '用户体验', to: '/dashboard/user-experience', icon: 'fa-users' },
-      { name: 'UserManagement', label: '用户管理', to: '/dashboard/user-management', icon: 'fa-user-cog' },
-      { name: 'SystemAlerts', label: '系统警报', to: '/dashboard/system-alerts', icon: 'fa-bell' },
-      { name: 'Logs', label: '日志管理', to: '/dashboard/logs', icon: 'fa-file-alt' },
-      // 根据需要添加更多导航项
-    ]
-
+  data() {
     return {
-      collapsed,
-      toggleCollapse,
-      navItems,
-      handleLogout
+      systemResourcesChildren: [
+        { to: '/dashboard/system-resources/cpu-usage', label: 'CPU 使用率', icon: 'fas fa-microchip' },
+        { to: '/dashboard/system-resources/memory-usage', label: '内存使用率', icon: 'fas fa-memory' },
+        { to: '/dashboard/system-resources/disk-usage', label: '磁盘使用情况', icon: 'fas fa-hdd' }
+      ],
+      userManagementChildren: [
+        { to: '/dashboard/user-management/add-user', label: '新增用户', icon: 'fas fa-user-plus' },
+        { to: '/dashboard/user-management/edit-user', label: '编辑用户', icon: 'fas fa-user-edit' }
+      ]
     }
   }
 }
@@ -76,75 +64,9 @@ export default {
 <style scoped>
 .sidebar {
   width: 250px;
-  background-color: #ffffff;
-  border-right: 1px solid #dcdfe6;
-  transition: width 0.3s;
-  display: flex;
-  flex-direction: column;
+  background-color: #2c3e50;
+  color: #ecf0f1;
   height: 100vh;
-}
-
-.sidebar.collapsed {
-  width: 80px;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px;
-  border-bottom: 1px solid #dcdfe6;
-}
-
-.collapse-button {
-  background: none;
-  border: none;
-  font-size: 1.2em;
-  cursor: pointer;
-}
-
-.nav-links {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.logout-button {
-  padding: 15px;
-  border-top: 1px solid #dcdfe6;
-  text-align: center;
-}
-
-.logout-button button {
-  background: none;
-  border: none;
-  color: #333;
-  cursor: pointer;
-  font-size: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.logout-button button.collapsed {
-  justify-content: center;
-}
-
-.logout-button button:hover {
-  color: #e74c3c;
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    transform: translateX(-100%);
-    z-index: 1000;
-  }
-
-  .sidebar.collapsed {
-    transform: translateX(0);
-    width: 250px;
-  }
+  padding-top: 20px;
 }
 </style>

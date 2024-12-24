@@ -1,23 +1,23 @@
 <!-- src/layouts/MainLayout.vue -->
 <template>
-  <div :class="['main-layout', themeClass]">
+  <div :class="['main-layout', theme]">
     <Header />
     <div class="content">
       <Sidebar />
-      <div class="router-view-container">
+      <main>
         <router-view />
-      </div>
+      </main>
     </div>
     <Footer />
   </div>
 </template>
 
 <script>
-import Header from '../components/Header.vue'
-import Sidebar from '../components/Sidebar.vue'
-import Footer from '../components/Footer.vue'
+import Header from '@/components/Header.vue'
+import Sidebar from '@/components/Sidebar.vue'
+import Footer from '@/components/Footer.vue'
+import { useMonitorStore } from '@/stores/monitorStore'
 import { computed, onMounted } from 'vue'
-import { useMonitorStore } from '../stores/monitorStore'
 
 export default {
   name: 'MainLayout',
@@ -28,39 +28,38 @@ export default {
   },
   setup() {
     const store = useMonitorStore()
-    const themeClass = computed(() => (store.theme === 'dark' ? 'dark-theme' : 'light-theme'))
+    const theme = computed(() => store.theme)
 
     onMounted(() => {
       store.initializeTheme()
     })
 
     return {
-      themeClass
+      theme
     }
   }
 }
 </script>
 
 <style scoped>
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.main-layout.light {
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+}
+
+.main-layout.dark {
+  --background-color: #1e1e1e;
+  --text-color: #ffffff;
 }
 
 .content {
   display: flex;
-  flex: 1;
-  overflow: hidden;
 }
 
-.router-view-container {
+main {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
   background-color: var(--background-color);
   color: var(--text-color);
 }
-
-/* 主题相关变量已在全局 style.css 中定义 */
 </style>

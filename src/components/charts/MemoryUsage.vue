@@ -1,59 +1,82 @@
 <!-- src/components/charts/MemoryUsage.vue -->
 <template>
-    <div class="memory-usage">
-      <h3>内存使用率</h3>
-      <div v-if="store.loading">加载中...</div>
-      <ChartComponent v-else :type="'doughnut'" :data="chartData" />
-      <div v-if="store.error" class="error">{{ store.error }}</div>
-    </div>
-  </template>
-  
-  <script>
-  import { computed } from 'vue'
-  import { useMonitorStore } from '../../stores/monitorStore'
-  import ChartComponent from './ChartComponent.vue'
-  
-  export default {
-    name: 'MemoryUsage',
-    components: {
-      ChartComponent
-    },
-    setup() {
-      const store = useMonitorStore()
-  
-      const chartData = computed(() => ({
-        labels: ['已用', '剩余'],
-        datasets: [
-          {
-            data: [
-              store.memoryUsage.used,
-              store.memoryUsage.free
-            ],
-            backgroundColor: ['#36A2EB', '#FFCE56'],
-            hoverOffset: 4
+  <div class="memory-usage">
+    <h4>内存使用率</h4>
+    <ChartComponent :type="'bar'" :data="chartData" :options="chartOptions" />
+  </div>
+</template>
+
+<script>
+import { computed, onMounted } from 'vue'
+import { useMonitorStore } from '@/stores/monitorStore'
+import ChartComponent from './ChartComponent.vue'
+
+export default {
+  name: 'MemoryUsage',
+  components: {
+    ChartComponent
+  },
+  setup() {
+    const store = useMonitorStore()
+
+    const chartData = computed(() => ({
+      labels: ['已用', '空闲'],
+      datasets: [
+        {
+          label: '内存使用 (MB)',
+          data: [store.memoryUsage.used, store.memoryUsage.free],
+          backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)'],
+          borderColor: ['rgb(54, 162, 235)', 'rgb(255, 206, 86)'],
+          borderWidth: 1
+        }
+      ]
+    }))
+
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: true, // 保持纵横比
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: '内存 (MB)'
           }
-        ]
-      }))
-  
-      return {
-        chartData,
-        store
+        },
+        x: {
+          title: {
+            display: true,
+            text: '状态'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        title: {
+          display: false
+        }
       }
     }
+
+    onMounted(() => {
+      store.fetchMemoryUsage()
+    })
+
+    return {
+      chartData,
+      chartOptions,
+      store
+    }
   }
-  </script>
-  
-  <style scoped>
-  .memory-usage {
-    background-color: #fff;
-    padding: 15px;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+.memory-usage {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 确保图表填满容器 */
+}
+</style>

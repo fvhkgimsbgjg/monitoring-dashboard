@@ -2,39 +2,27 @@
 <template>
   <div class="system-resources">
     <h3>系统资源</h3>
-    <ChartComponent :type="'line'" :data="chartData" />
+    <router-view />
     <div v-if="store.error" class="error">{{ store.error }}</div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useMonitorStore } from '@/stores/monitorStore' // 使用路径别名
-import ChartComponent from '@/components/charts/ChartComponent.vue' // 修正导入路径
+import { useMonitorStore } from '@/stores/monitorStore'
+import { onMounted } from 'vue'
 
 export default {
   name: 'SystemResources',
-  components: {
-    ChartComponent
-  },
   setup() {
     const store = useMonitorStore()
 
-    const chartData = computed(() => ({
-      labels: store.cpuUsage.map(entry => entry.time),
-      datasets: [
-        {
-          label: 'CPU 使用率 (%)',
-          data: store.cpuUsage.map(entry => entry.usage),
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }
-      ]
-    }))
+    onMounted(() => {
+      store.fetchCpuUsage()
+      store.fetchMemoryUsage()
+      store.fetchDiskUsage()
+    })
 
     return {
-      chartData,
       store
     }
   }
@@ -47,8 +35,8 @@ export default {
   padding: 15px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
+  margin-top: 20px;
 }
-
 .error {
   color: red;
   margin-top: 10px;

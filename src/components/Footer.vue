@@ -1,7 +1,7 @@
 <!-- src/components/Footer.vue -->
 <template>
   <footer class="footer">
-    <p>&copy; 2024 监控系统. 保留所有权利。</p>
+    <p>&copy; 2024 监控仪表盘. 保留所有权利。</p>
   </footer>
 </template>
 
@@ -13,9 +13,12 @@ export default {
 
 <style scoped>
 .footer {
+  background-color: #34495e;
+  color: #ecf0f1;
   text-align: center;
   padding: 10px 0;
-  background-color: #409eff;
-  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
 }
 </style>

@@ -1,15 +1,25 @@
 <!-- src/components/SidebarItem.vue -->
 <template>
-  <router-link :to="to" class="sidebar-item" :class="{ active: isActive }" :title="collapsed ? label : ''">
-    <i :class="iconClass"></i>
-    <span v-if="!collapsed" class="label">{{ label }}</span>
-  </router-link>
+  <div>
+    <router-link :to="to" :exact="exact" class="sidebar-item" active-class="active">
+      <i :class="icon"></i>
+      <span>{{ label }}</span>
+    </router-link>
+    <div v-if="children && children.length" class="sidebar-children">
+      <SidebarItem
+        v-for="child in children"
+        :key="child.to"
+        :to="child.to"
+        :label="child.label"
+        :icon="child.icon"
+        :exact="child.exact"
+        :children="child.children"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-
 export default {
   name: 'SidebarItem',
   props: {
@@ -17,27 +27,22 @@ export default {
       type: String,
       required: true
     },
-    icon: {
-      type: String,
-      required: true
-    },
     label: {
       type: String,
       required: true
     },
-    collapsed: {
+    icon: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    exact: {
       type: Boolean,
       default: false
-    }
-  },
-  setup(props) {
-    const route = useRoute()
-    const isActive = computed(() => route.path === props.to)
-    const iconClass = computed(() => `fas ${props.icon}`)
-
-    return {
-      isActive,
-      iconClass
+    },
+    children: {
+      type: Array,
+      default: () => []
     }
   }
 }
@@ -47,28 +52,20 @@ export default {
 .sidebar-item {
   display: flex;
   align-items: center;
-  padding: 10px 15px;
-  color: #333;
+  padding: 10px 20px;
+  color: #ecf0f1;
   text-decoration: none;
-  transition: background-color 0.3s;
-  position: relative;
 }
-
 .sidebar-item:hover {
-  background-color: #f0f0f0;
+  background-color: #34495e;
 }
-
 .sidebar-item.active {
-  background-color: #dcdfe6;
-  font-weight: bold;
+  background-color: #1abc9c;
 }
-
-.fas {
+.sidebar-item i {
   margin-right: 10px;
-  font-size: 1.2em;
 }
-
-.label {
-  white-space: nowrap;
+.sidebar-children {
+  padding-left: 20px;
 }
 </style>

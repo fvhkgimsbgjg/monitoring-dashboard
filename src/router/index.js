@@ -2,13 +2,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 import Dashboard from '@/views/Dashboard.vue'
-import SystemResources from '@/components/SystemResources.vue' // 已修正导入路径
-import UserExperience from '@/components/UserExperience.vue' // 修正后的导入路径
+import SystemResources from '@/components/SystemResources.vue'
+import CpuUsage from '@/components/charts/CpuUsage.vue'
+import MemoryUsage from '@/components/charts/MemoryUsage.vue'
+import DiskUsage from '@/components/charts/DiskUsage.vue'
 import UserManagement from '@/views/UserManagement.vue'
+import AddUser from '@/components/UserManagement/AddUser.vue'
+import EditUser from '@/components/UserManagement/EditUser.vue'
 import SystemAlerts from '@/views/SystemAlerts.vue'
 import Logs from '@/views/Logs.vue'
+import UserExperience from '@/components/UserExperience.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
-import { useMonitorStore } from '@/stores/monitorStore'
+
+// 新增监控组件
+import NetworkTraffic from '@/components/charts/NetworkTraffic.vue'
+import FrontendPerformance from '@/components/charts/FrontendPerformance.vue'
+import ErrorReports from '@/components/charts/ErrorReports.vue'
+import UserBehavior from '@/components/charts/UserBehavior.vue'
 
 const routes = [
   {
@@ -29,17 +39,41 @@ const routes = [
       {
         path: 'system-resources',
         name: 'SystemResources',
-        component: SystemResources
-      },
-      {
-        path: 'user-experience',
-        name: 'UserExperience',
-        component: UserExperience
+        component: SystemResources,
+        children: [
+          {
+            path: 'cpu-usage',
+            name: 'CpuUsage',
+            component: CpuUsage
+          },
+          {
+            path: 'memory-usage',
+            name: 'MemoryUsage',
+            component: MemoryUsage
+          },
+          {
+            path: 'disk-usage',
+            name: 'DiskUsage',
+            component: DiskUsage
+          }
+        ]
       },
       {
         path: 'user-management',
         name: 'UserManagement',
-        component: UserManagement
+        component: UserManagement,
+        children: [
+          {
+            path: 'add-user',
+            name: 'AddUser',
+            component: AddUser
+          },
+          {
+            path: 'edit-user',
+            name: 'EditUser',
+            component: EditUser
+          }
+        ]
       },
       {
         path: 'system-alerts',
@@ -51,7 +85,32 @@ const routes = [
         name: 'Logs',
         component: Logs
       },
-      // 根据需要添加更多子路由
+      {
+        path: 'user-experience',
+        name: 'UserExperience',
+        component: UserExperience
+      },
+      // 新增监控路由
+      {
+        path: 'network-traffic',
+        name: 'NetworkTraffic',
+        component: NetworkTraffic
+      },
+      {
+        path: 'frontend-performance',
+        name: 'FrontendPerformance',
+        component: FrontendPerformance
+      },
+      {
+        path: 'error-reports',
+        name: 'ErrorReports',
+        component: ErrorReports
+      },
+      {
+        path: 'user-behavior',
+        name: 'UserBehavior',
+        component: UserBehavior
+      }
     ]
   },
   // 可以添加404页面等其他路由
@@ -62,19 +121,15 @@ const router = createRouter({
   routes
 })
 
-// 添加全局前置守卫
+// 添加路由守卫（如果尚未添加）
 router.beforeEach((to, from, next) => {
-  const store = useMonitorStore()
-
-  // 如果用户已登录但访问登录页，则重定向到仪表盘
-  if (to.name === 'Login' && store.user) {
-    next({ name: 'Dashboard' })
-    return
-  }
-
-  // 如果路由需要认证且用户未登录，则重定向到登录页
-  if (to.meta.requiresAuth && !store.user) {
-    next({ name: 'Login' })
+  const authToken = localStorage.getItem('authToken')
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!authToken) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
   } else {
     next()
   }

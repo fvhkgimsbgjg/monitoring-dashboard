@@ -1,12 +1,12 @@
 <!-- src/components/charts/ChartComponent.vue -->
 <template>
-  <div>
-    <canvas ref="chartCanvas"></canvas>
+  <div class="chart-container">
+    <canvas ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
 import { Chart, registerables } from 'chart.js'
 
 Chart.register(...registerables)
@@ -24,18 +24,21 @@ export default {
     },
     options: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        responsive: true,
+        maintainAspectRatio: true // 保持图表的纵横比
+      })
     }
   },
   setup(props) {
-    const chartCanvas = ref(null)
+    const canvas = ref(null)
     let chartInstance = null
 
     const renderChart = () => {
       if (chartInstance) {
         chartInstance.destroy()
       }
-      chartInstance = new Chart(chartCanvas.value, {
+      chartInstance = new Chart(canvas.value, {
         type: props.type,
         data: props.data,
         options: props.options
@@ -54,20 +57,28 @@ export default {
       { deep: true }
     )
 
-    watch(
-      () => props.type,
-      () => {
-        renderChart()
+    onBeforeUnmount(() => {
+      if (chartInstance) {
+        chartInstance.destroy()
       }
-    )
+    })
 
     return {
-      chartCanvas
+      canvas
     }
   }
 }
 </script>
 
 <style scoped>
-/* 可根据需要添加样式 */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%; /* 让容器高度占满父元素 */
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
 </style>

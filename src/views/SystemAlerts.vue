@@ -3,7 +3,7 @@
     <div class="system-alerts">
       <h1>系统警报</h1>
       <div class="alerts-list">
-        <div v-for="alert in alerts" :key="alert.id" :class="['alert', alert.level]">
+        <div v-for="alert in store.alerts" :key="alert.id" :class="['alert', alert.level]">
           <strong>{{ alert.level.toUpperCase() }}:</strong> {{ alert.message }}
           <span class="timestamp">{{ alert.timestamp }}</span>
         </div>
@@ -12,20 +12,15 @@
   </template>
   
   <script>
-  import { ref } from 'vue'
+  import { useMonitorStore } from '@/stores/monitorStore'
   
   export default {
     name: 'SystemAlerts',
     setup() {
-      const alerts = ref([
-        { id: 1, level: 'warning', message: '内存使用率超过80%。', timestamp: '2024-04-27 10:15:00' },
-        { id: 2, level: 'error', message: '无法连接到数据库。', timestamp: '2024-04-27 10:20:00' },
-        { id: 3, level: 'info', message: '系统维护将在今晚12点开始。', timestamp: '2024-04-27 09:00:00' },
-        // 添加更多静态警报数据
-      ])
+      const store = useMonitorStore()
   
       return {
-        alerts
+        store
       }
     }
   }
