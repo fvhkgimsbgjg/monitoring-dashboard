@@ -1,3 +1,4 @@
+<!-- src/layouts/MainLayout.vue -->
 <template>
     <div class="main-layout">
       <Header />
@@ -11,13 +12,13 @@
     </div>
   </template>
   
-  
   <script>
   import Header from '../components/Header.vue'
   import Sidebar from '../components/Sidebar.vue'
   import Footer from '../components/Footer.vue'
   
   export default {
+    name: 'MainLayout',
     components: {
       Header,
       Sidebar,
@@ -46,5 +47,4 @@
     background-color: #f5f5f5;
   }
   </style>
-  
   

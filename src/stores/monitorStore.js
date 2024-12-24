@@ -11,6 +11,10 @@ export const useMonitorStore = defineStore('monitor', {
     userBehavior: {}
   }),
   actions: {
-    // 定义数据获取和更新方法
+    // 示例：更新 CPU 使用率
+    updateCpuUsage(data) {
+      this.cpuUsage = data
+    },
+    // 添加其他更新方法
   }
 })

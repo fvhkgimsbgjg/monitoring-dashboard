@@ -1,3 +1,4 @@
+<!-- src/views/Dashboard.vue -->
 <template>
     <MainLayout>
       <div class="dashboard">

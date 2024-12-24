@@ -2,7 +2,7 @@
 <template>
     <div class="user-behavior-analysis">
       <h3>用户行为分析</h3>
-      <ChartComponent :type="'funnel'" :data="chartData" />
+      <ChartComponent :type="'pie'" :data="chartData" />
     </div>
   </template>
   

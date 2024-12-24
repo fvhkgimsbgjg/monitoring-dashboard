@@ -1,3 +1,4 @@
+<!-- src/components/UserExperience.vue -->
 <template>
     <div class="user-experience">
       <FrontendPerformance />

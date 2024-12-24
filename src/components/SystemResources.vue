@@ -1,8 +1,10 @@
+<!-- src/components/SystemResources.vue -->
 <template>
     <div class="system-resources">
       <CpuUsage />
       <MemoryUsage />
       <StorageNetwork />
+      <NetworkTraffic />
     </div>
   </template>
   
@@ -10,13 +12,15 @@
   import CpuUsage from './charts/CpuUsage.vue'
   import MemoryUsage from './charts/MemoryUsage.vue'
   import StorageNetwork from './charts/StorageNetwork.vue'
+  import NetworkTraffic from './charts/NetworkTraffic.vue'
   
   export default {
     name: 'SystemResources',
     components: {
       CpuUsage,
       MemoryUsage,
-      StorageNetwork
+      StorageNetwork,
+      NetworkTraffic
     }
   }
   </script>

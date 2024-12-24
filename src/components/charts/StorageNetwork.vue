@@ -20,14 +20,14 @@
           labels: ['磁盘 1', '磁盘 2', '磁盘 3'],
           datasets: [
             {
-              label: '存储使用率',
+              label: '存储使用率 (%)',
               data: [70, 50, 30],
               backgroundColor: 'rgba(255, 159, 64, 0.2)',
               borderColor: 'rgba(255, 159, 64, 1)',
               borderWidth: 1
             },
             {
-              label: '网络流量',
+              label: '网络流量 (Mbps)',
               data: [120, 90, 60],
               backgroundColor: 'rgba(153, 102, 255, 0.2)',
               borderColor: 'rgba(153, 102, 255, 1)',
