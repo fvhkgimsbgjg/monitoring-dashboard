@@ -3,16 +3,21 @@
   <div class="dashboard">
     <h1>仪表盘</h1>
     <div class="charts-grid">
-      <div class="chart-item">
-        <CpuUsage />
+      <div class="chart-container">
+        <div class="chart-item">
+          <CpuUsage />
+        </div>
       </div>
-      <div class="chart-item">
-        <MemoryUsage />
+      <div class="chart-container">
+        <div class="chart-item">
+          <MemoryUsage />
+        </div>
       </div>
-      <div class="chart-item">
-        <DiskUsage />
+      <div class="chart-container">
+        <div class="chart-item">
+          <DiskUsage />
+        </div>
       </div>
-      <!-- 如果有新增的监控项，可以继续添加 -->
     </div>
   </div>
 </template>
@@ -37,33 +42,45 @@ export default {
   padding: 20px;
   background-color: var(--background-color);
   color: var(--text-color);
+  width: 100%;
+  height: 100%;
 }
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 自适应列数 */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   margin-top: 20px;
+  width: 100%;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
 }
 
 .chart-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #f9f9f9;
   padding: 15px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
-  max-width: 400px; /* 限制最大宽度，防止超出侧边栏 */
-  height: 400px; /* 设置固定高度，保持良好比例 */
-  margin: 0 auto; /* 水平居中 */
   display: flex;
   flex-direction: column;
 }
 
-.chart-item h4 {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.chart-item > div {
-  flex: 1; /* 让图表区域填满剩余空间 */
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
 }
 </style>

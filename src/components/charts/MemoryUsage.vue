@@ -2,7 +2,9 @@
 <template>
   <div class="memory-usage">
     <h4>内存使用率</h4>
-    <ChartComponent :type="'bar'" :data="chartData" :options="chartOptions" />
+    <div class="chart-wrapper">
+      <ChartComponent :type="'bar'" :data="chartData" :options="chartOptions" />
+    </div>
   </div>
 </template>
 
@@ -34,7 +36,8 @@ export default {
 
     const chartOptions = {
       responsive: true,
-      maintainAspectRatio: true, // 保持纵横比
+      maintainAspectRatio: true,
+      aspectRatio: 1.5,
       scales: {
         y: {
           beginAtZero: true,
@@ -53,9 +56,6 @@ export default {
       plugins: {
         legend: {
           position: 'top'
-        },
-        title: {
-          display: false
         }
       }
     }
@@ -66,8 +66,7 @@ export default {
 
     return {
       chartData,
-      chartOptions,
-      store
+      chartOptions
     }
   }
 }
@@ -75,8 +74,13 @@ export default {
 
 <style scoped>
 .memory-usage {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%; /* 确保图表填满容器 */
+}
+
+.chart-wrapper {
+  flex: 1;
+  position: relative;
 }
 </style>

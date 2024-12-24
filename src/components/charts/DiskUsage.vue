@@ -44,22 +44,11 @@ export default {
 
     const chartOptions = {
       responsive: true,
-      maintainAspectRatio: true, // 保持图表的纵横比
-      aspectRatio: 1, // 设置为1，保持正方形比例
+      maintainAspectRatio: true,
+      aspectRatio: 1.5,
       plugins: {
         legend: {
           position: 'top'
-        },
-        title: {
-          display: false
-        }
-      },
-      layout: {
-        padding: {
-          top: 20,
-          bottom: 20,
-          left: 20,
-          right: 20
         }
       }
     }
@@ -70,8 +59,7 @@ export default {
 
     return {
       chartData,
-      chartOptions,
-      store
+      chartOptions
     }
   }
 }
@@ -79,27 +67,13 @@ export default {
 
 <style scoped>
 .disk-usage {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
-  padding: 15px;
-  background-color: #f9f9f9;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  margin-top: 20px;
-}
-
-.disk-usage h4 {
-  text-align: center;
-  margin-bottom: 15px;
 }
 
 .chart-wrapper {
-  width: 100%;
-  max-width: 400px; /* 设置最大宽度 */
-  height: 400px; /* 设置固定高度，保持正方形比例 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
+  position: relative;
 }
 </style>
